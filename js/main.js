@@ -58,7 +58,8 @@
     function getExamMarkers(exams, daysDiff) {
         return exams.map(function(exam, index) {
             return {
-                class: 'exam ' + (exam.class || '') + ' ' + 'color-' + exam.color,
+                class: 'exam ' + (exam.class || ''),
+                color: exam.color,
                 left: getLeftForDay(exam.daysBetween, daysDiff),
                 content: exam.date + '<br/>' + exam.topic,
                 date: exam.timeParsed
