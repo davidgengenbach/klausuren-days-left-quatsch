@@ -1,0 +1,24 @@
+{
+  "name": "klausuren-days-left-quatsch",
+  "authors": [
+    "David Gengenbach <davidgengenbach@gmx.de>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "^2.13.0",
+    "jquery": "^2.2.4",
+    "ramda": "^0.21.0",
+    "doT": "^1.0.1"
+  }
+}
