@@ -6,29 +6,33 @@
 
 <body>
     <div class="holder">
-        <div class="line"></div>
+        <div class="line-holder">
+            <div class="line"></div>
+            <div class="dots"></div>
+        </div>
     </div>
-    <div class="exams"></div>
 
-    <template id="exam">
-        <div class="exam dot {{=it.class}}" style="left: {{=it.left}}">
+    <template id="dot">
+        <div class="dot {{=it.class}}" style="left: {{=it.left}}">
             <div class="content">
-                {{=it.date}}
-                {{=it.exam}}
+                {{=it.content}}
             </div>
         </div>
     </template>
+
     <template id="exams">
-        {{~it.exams :value:index}}
-        <div class="exam">
-            <h1>{{=value.topic}}</h1>
-            {{=value.date}}
-            <br/>
-            {{=value.timeDay}}
-            <br/>
-            (in {{=value.daysBetween}} days)
+        <div class="exams">
+            {{~it.exams :value:index}}
+            <div class="exam color-{{=value.color}}">
+                <h1>{{=value.topic}}</h1>
+                {{=value.date}}
+                <br/>
+                {{=value.timeDay}}
+                <br/>
+                (in {{=value.daysBetween}} days)
+            </div>
+            {{~}}
         </div>
-        {{~}}
     </template>
 
     <script src="lib/jquery/dist/jquery.js" type="text/javascript"></script>
