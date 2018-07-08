@@ -10,7 +10,7 @@
 
     var $holder = $('.holder');
 
-    getExams().then(renderExams);
+    getExams().then(renderExams, console.error.bind(console));
 
     function renderExams(exams_) {
         var exams = exams_
