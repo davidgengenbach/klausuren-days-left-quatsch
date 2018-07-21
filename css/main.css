@@ -65,7 +65,7 @@ table {
 
 body {
     padding: 50px;
-    font-family: Verdana;
+    font-family: 'Helvetica Neue', Helvetica;
     line-height: 1.4;
     font-size: 15px;
 }
@@ -112,8 +112,8 @@ b {
 .dot .content {
     position: absolute;
     margin-top: 20px;
-    left: -28px;
-    width: 80px;
+    left: -37px;
+    width: 90px;
     text-align: center;
 }
 

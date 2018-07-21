@@ -1,6 +1,8 @@
 (function($, R, moment, doT) {
     'use strict';
 
+    moment.locale('de');
+
     var config = {
         SHOW_TODAY_MARKER: true,
         SHOW_MONTH_MARKERS: false,
@@ -20,6 +22,7 @@
                 item.timeDay = item.time.split(' ')[1];
                 item.daysBetween = item.timeParsed.diff(moment(), 'days');
                 item.date = item.timeParsed.format('DD.MM.');
+                item.dateHuman = moment(item.time, 'DD.MM.YYYY').format('DD.MM. (dd)');
                 return item;
             })
             .sort(function(a, b) {
