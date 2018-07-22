@@ -20,7 +20,7 @@
                 item.color = index;
                 item.timeParsed = moment(item.time, 'DD.MM.YYYY');
                 item.timeDay = item.time.split(' ')[1];
-                item.daysBetween = item.timeParsed.diff(moment(), 'days');
+                item.daysBetween = item.timeParsed.startOf('day').diff(moment().startOf('day'), 'days');
                 item.date = item.timeParsed.format('DD.MM.');
                 item.dateHuman = moment(item.time, 'DD.MM.YYYY').format('DD.MM. (dd)');
                 return item;
