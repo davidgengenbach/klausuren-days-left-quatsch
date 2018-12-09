@@ -4,36 +4,24 @@
     moment.locale('de');
 
     var config = {
-        SHOW_TODAY_MARKER: true,
-        SHOW_MONTH_MARKERS: false,
-        DAY_TEMPLATE: doT.template($('#dot').remove().html()),
-        EXAMS_TEMPLATE: doT.template($('#exams').remove().html())
-    };
-
-    var $holder = $('.holder');
+            SHOW_TODAY_MARKER: true,
+            FILTER_OUT_TODAY_EXAMS: true,
+            DAY_TEMPLATE: doT.template($('#dot').remove().html()),
+            EXAMS_TEMPLATE: doT.template($('#exams').remove().html())
+        },
+        $holder = $('.holder'),
+        $body = $('body'),
+        today = moment().startOf('day');
 
     getExams().then(renderExams, console.error.bind(console));
 
     function renderExams(exams_) {
         var exams = exams_
-            .map(function(item, index) {
-                item.color = index;
-                item.timeParsed = moment(item.time, 'DD.MM.YYYY');
-                item.timeDay = item.time.split(' ')[1];
-                item.daysBetween = item.timeParsed.startOf('day').diff(moment().startOf('day'), 'days');
-                item.date = item.timeParsed.format('DD.MM.');
-                item.dateHuman = moment(item.time, 'DD.MM.YYYY').format('DD.MM. (dd)');
-                return item;
-            })
-            .sort(function(a, b) {
-                return a.timeParsed.diff(b.timeParsed);
-            });
+            .map(enrichExam)
+            .filter(exam => !config.FILTER_OUT_TODAY_EXAMS || exam.daysBetween > 0)
+            .sort((a, b) => a.timeParsed.diff(b.timeParsed));
 
-        var daysBetween = R.last(exams).timeParsed.diff(moment(), 'days');
-
-        $('body').append(config.EXAMS_TEMPLATE({
-            exams: exams
-        }));
+        $body.append(config.EXAMS_TEMPLATE({ exams: exams }));
 
         var dots = [];
         if (config.SHOW_TODAY_MARKER)
@@ -44,50 +32,38 @@
                 date: moment()
             });
 
-        if (config.SHOW_MONTH_MARKERS)
-            dots = dots.concat(getMonthMarkers(R.last(exams).timeParsed, daysBetween));
+        var daysBetween = R.last(exams).timeParsed.startOf('day').diff(today, 'days');
+        dots = dots.concat(getExamMarkers(exams, daysBetween, true));
+        var renderedDots = dots
+            .sort((a, b) => a.date.diff(b.date))
+            .map(config.DAY_TEMPLATE);
 
-        dots = dots.concat(getExamMarkers(exams, daysBetween));
+        $holder.find('.dots').append(renderedDots);
+    }
 
-        $holder
-            .find('.dots')
-            .append(dots
-                .sort(function(a, b) {
-                    return a.date.diff(b.date);
-                })
-                .map(config.DAY_TEMPLATE));
+    function enrichExam(exam, index) {
+        exam.color = index;
+        exam.timeParsed = moment(exam.time, 'DD.MM.YYYY');
+        exam.timeDay = exam.time.split(' ')[1];
+        exam.daysBetween = exam.timeParsed.startOf('day').diff(today, 'days');
+        exam.date = exam.timeParsed.format('DD.MM.');
+        exam.dateHuman = moment(exam.time, 'DD.MM.YYYY').format('DD.MM. (dd)');
+        return exam;
     }
 
     function getExamMarkers(exams, daysDiff) {
-        return exams.map(function(exam, index) {
+        return exams.map(exam => {
             return {
                 class: 'exam ' + (exam.class || ''),
                 color: exam.color,
-                left: getLeftForDay(exam.daysBetween, daysDiff),
+                left: getPercentage(exam.daysBetween, daysDiff),
                 content: exam.date + '<br/>' + exam.topic,
                 date: exam.timeParsed
             };
         });
     }
 
-    function getMonthMarkers(lastDate, daysDiff) {
-        var date = moment().startOf('month');
-        var monthsBetween = lastDate.diff(date, 'months');
-
-        var dots = [];
-        for (var i = 0; i < monthsBetween; i++) {
-            date.add(1, 'months');
-            dots.push({
-                class: 'month-marker',
-                left: getLeftForDay(date.diff(moment(), 'days'), daysDiff),
-                content: date.format('DD.MM.'),
-                date: date.clone()
-            });
-        }
-        return dots;
-    }
-
-    function getLeftForDay(day, daysCount) {
+    function getPercentage(day, daysCount) {
         return (day / daysCount * 100) + '%';
     }
 
